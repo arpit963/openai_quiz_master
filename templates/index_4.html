@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="styles_4.css"  rel="stylesheet">
+    <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"> -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <title>Quiz Question</title>
+    
+</head>
+<body>
+    <label for="question_description">Question </label>    
+    <h2>{{ form.label }}</h2>  <!-- Displays the question text -->
+    <!-- <p id="timer">Time left: 30 seconds</p> -->
+    <form method="POST">
+        {% csrf_token %}
+        {{question.text}}
+        <!-- Custom rendering for the radio buttons -->
+        <div class="radio-buttons">
+            {% for radio in form.answer %}
+                <div class="radio-option">
+                    <input type="radio" name="{{ radio.name }}" value="{{ radio.choice_value }}" id="{{ radio.id_for_label }}">
+                    <label for="{{ radio.id_for_label }}">{{ radio.choice_label }}</label>
+                </div>
+            {% endfor %}
+        </div>
+        <button type="Submit" name="Check" class="first btn btn-success">Check</button>
+        <button type="Submit" name="Next" class="second btn btn-success">Next</button>
+    </form>
+</body>
+</html>

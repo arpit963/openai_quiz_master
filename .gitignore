@@ -1,0 +1,5 @@
+.venv
+.env
+db.sqlite3
+main/__pycache__/
+QuizB/__pycache__/
