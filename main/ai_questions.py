@@ -9,7 +9,7 @@ from pathlib import Path
 def get_question(user_input):
     model = "gpt-3.5-turbo"
     system_prompt = "You are a quiz master. Creating the one liner quizzes with some options is your proficiency."
-    message = f"Study the following topics properly: {user_input}. Now generate UNIQUE and entertaining 4 quiz questions in JSON format with question, 3 options and ONE correct answer. Each question should be concise, ensuring easy to understand words."
+    message = f"Study the following topics properly: {user_input}. Now generate UNIQUE and entertaining 4 quiz questions in JSON format key is 'quiz' with question, 3 options and ONE correct answer. Each question should be concise, ensuring easy to understand words."
     print("Message : ", message)
     # Prepare the data for the API request
     data = {'model': model,
@@ -25,8 +25,8 @@ def get_question(user_input):
     # key = os.environ["OPENAI_SECRET_KEY"]
 
     load_dotenv(Path("/home/decode/Documents/Django_Project/.env"))
-    OpenAI.api_key = str(os.getenv("OPENAI_MAIN_KEY"))
-    # OpenAI.api_key = str(os.getenv("OPENAI_NEW_KEY"))
+    # OpenAI.api_key = str(os.getenv("OPENAI_MAIN_KEY"))
+    OpenAI.api_key = str(os.getenv("OPENAI_NEW_KEY"))
     print("API KEY : ", OpenAI.api_key)
 
     # Set up the headers for the API request
