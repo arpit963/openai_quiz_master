@@ -164,6 +164,7 @@ def quiz_results(request):
     
     # Clear the session after showing the results
     request.session.flush()  # Clear session data after displaying results
+    request.session['current_question_index'] = 0
     
     # Render the results page
     return render(request, 'quiz_results.html', {'score': score, 'total_questions': total_questions})
@@ -182,75 +183,172 @@ def next_question(request):
         return HttpResponse("Next Question!")
     return render(request, "index.html")
 
-def check_answer(request):
-    if request.method == 'POST':
-        return HttpResponse("Answer checked!")
-    return render(request, "index.html")
 
+# # Get quiz from quiz.py using manual dict.
+# def quiz(request):          
+#     # Get the quiz data
+#     print("------------------function Start------------------")
+    
+#     for data in question_data.values():
+#         print("############################ Data Printed ############################") # data type List
+        
+#         # Initialize score in session if it's not already present
+#         if 'score' not in request.session:
+#             request.session['score'] = 0
+            
+#         # Retrieve current_question_index from session, defaulting to 0 (first question)
+#         current_question_index = request.session.get('current_question_index', -1)
+#         print("current_question_index_1 = ", current_question_index)    # initial output 0 
+        
+#         # Perform calculation before passing to the template
+#         adjusted_question_index = current_question_index + 1
+    
+#         # Restrict the quiz to 4 questions only  
+#         # If all questions have been answered, show results      
+#         if current_question_index >= 4:
+#             # End of quiz: redirect to results
+#             print(f"############################ Final Score: {request.session['score']}")
+#             return redirect('quiz_results')  # Redirect to a results page
 
+#         # Get the current question  
+#         current_question = data[current_question_index]
+#         print("Current Question : ", current_question_index,":",current_question)
+            
+#         # Process the answer when the user submits the form
+#         if request.method == 'POST':
+#             # Get the selected option for the current question
+#             selected_option = request.POST.get('selected_option')
+#             print("current_question_index_before_answer_check : ", current_question_index)
+
+#             answer = data[current_question_index]['correct_answer'] # Answer picked on index 1 -----
+            
+#             # Debugging output
+#             print(f"Selected_Option_by_User = {selected_option}")
+#             print("Correct_answer_of_the_Question = ", answer)
+#             print("current_question_index_after_answer_check = ", current_question_index) 
+        
+#             # Check if the selected option is correct
+#             if selected_option == answer:
+#                 request.session['score'] += 1  # Increment score if correct
+#                 print(f"Score = {request.session['score']}") 
+            
+            
+#             current_question_index += 1
+#             print("current_question_index_after_incriment = ", current_question_index)
+
+#             request.session['current_question_index'] = current_question_index  # Save the updated index to session
+#             print("############################ request_session_index = ", request.session['current_question_index'], "###########################") # output is 1             
+            
+#             # Reload the page to show the next question
+#             return redirect('quiz')
+        
+#         # Render the current question
+#         return render(request, 'index.html', {
+#             'current_question': current_question, 
+#             'current_question_index': adjusted_question_index,  # Pass the adjusted value to template 
+#             'total_questions': len(data),
+#             'score': request.session['score']   # Pass the current score to the template
+#             })
+        
+        
+        
 # Get quiz from quiz.py using manual dict.
 def quiz(request):          
-    # Get the quiz data
     print("------------------function Start------------------")
     
-    for data in question_data.values():
-        print("############################ Data Printed ############################") # data type List
-        
-        # Initialize score in session if it's not already present
-        if 'score' not in request.session:
-            request.session['score'] = 0
-            
-        # Retrieve current_question_index from session, defaulting to 0 (first question)
-        current_question_index = request.session.get('current_question_index', -1)
-        print("current_question_index_1 = ", current_question_index)    # initial output 0 
-        
-        # Perform calculation before passing to the template
-        adjusted_question_index = current_question_index + 1
+    default_input = ["quizzes", "quiz"]
+    title = random.choice(default_input)
+    print(f"Random_title =  '{title}'") 
     
-        # Restrict the quiz to 4 questions only  
-        # If all questions have been answered, show results      
-        if current_question_index >= 4:
-            # End of quiz: redirect to results
-            print(f"############################ Final Score: {request.session['score']}")
-            return redirect('quiz_results')  # Redirect to a results page
-
+    # Initialize score in session if it's not already present
+    if 'score' not in request.session:
+        request.session['score'] = 0
+        
+    # Retrieve current_question_index from session, defaulting to 0 (first question)
+    current_question_index = request.session.get('current_question_index', 0)
+    print("current_question_index_1 = ", current_question_index, '\n')
+    
+    # Ensure we have the question data
+    data = question_data.get(title, [])
+    # print('data : ', data, '\n')
+    
+    # Store the question data in session if it's not already there
+    if not request.session.get('quiz_data'):  # Only store if it's not already in session
+        request.session['quiz_data'] = data
+    
+    # get the data from the session 
+    current_data = request.session.get('quiz_data', [])
+    
+    # Restrict the quiz to 4 questions only  
+    if current_question_index >= 4:
+        return redirect('quiz_results')  # Redirect to a results page
+    
+     # Use current_data in your view
+    if current_data:
+        # print("Current Data loaded from session:", current_data, '\n')
+       
         # Get the current question  
-        current_question = data[current_question_index]
-        print("Current Question : ", current_question_index,":",current_question)
-            
-        # Process the answer when the user submits the form
+        current_question = current_data[current_question_index]
+        # answer_check_question = current_data[current_question_index - 1]
+        print(f"Current_Question = ('{current_question_index}'), {current_question} \n")
+        
+        # Process the answer when the user submits the form (POST request)
         if request.method == 'POST':
             # Get the selected option for the current question
             selected_option = request.POST.get('selected_option')
-            print("current_question_index_before_answer_check : ", current_question_index)
-
-            answer = data[current_question_index]['correct_answer'] # Answer picked on index 1 -----
+            print(f"Selected_Option_by_User = '{selected_option}'")
+                        
+            # if not selected_option:
+            #     print("Option_selected = False")
+            #     return render(request, 'index.html', {
+            #         'current_question': current_question,
+            #         'current_question_index': current_question_index,
+            #         'total_questions': len(data),
+            #         'score': request.session['score'],
+            #         'error_message': 'Please select an option before proceeding.'
+            #     })
             
-            # Debugging output
-            print(f"Selected_Option_by_User = {selected_option}")
-            print("Correct_answer_of_the_Question = ", answer)
-            print("current_question_index_after_answer_check = ", current_question_index) 
-        
-            # Check if the selected option is correct
-            if selected_option == answer:
-                request.session['score'] += 1  # Increment score if correct
-                print(f"Score = {request.session['score']}") 
-            
+            # Call the helper function to check if the answer is correct
+            check_answer(current_question, selected_option, request)
+            print("check_answer = True ")
             
             current_question_index += 1
             print("current_question_index_after_incriment = ", current_question_index)
-
-            request.session['current_question_index'] = current_question_index  # Save the updated index to session
-            print("############################ request_session_index = ", request.session['current_question_index'], "###########################") # output is 1             
+            request.session['current_question_index'] = current_question_index  # Save the updated index to session          
             
-            # Reload the page to show the next question
-            return redirect('quiz')
-        
-        # Render the current question
+            # Continue showing the next question in the sequence
+            return render(request, 'index.html', {
+                'current_question': current_question,
+                'current_question_index': current_question_index,  # Display 1-based index in template
+                'total_questions': len(data),
+                'score': request.session['score']
+            })      
+         
+        # If it's a GET request (first time loading the question)
         return render(request, 'index.html', {
             'current_question': current_question, 
-            'current_question_index': adjusted_question_index,  # Pass the adjusted value to template 
+            'current_question_index': current_question_index,   
             'total_questions': len(data),
-            'score': request.session['score']   # Pass the current score to the template
+            'score': request.session['score']
             })
         
+        
+def check_answer(current_question, selected_option, request):
+    """
+    Helper function to check the selected answer and update the score.
+    """
+    # Get the correct answer for the current question
+    correct_answer = current_question['correct_answer']
+    print(f"Correct_Answer_from_check_answer_function =  '{ correct_answer }' \n")
+    
+    # Check if the selected answer is correct
+    if selected_option == correct_answer:
+        print("condition = 'IF' ")
+        print(f"Selected_option =  '{selected_option}' ")
+        print(f"correct_answer =  '{correct_answer}' ")
+        request.session['score'] += 1  # Increment score if correct
+        print(f"Score_updated = {request.session['score']}")
+    else: 
+        print("condition = 'ELSE' ")
+        print(f"Selected_option =  '{selected_option}' ")
+        print(f"correct_answer =  '{correct_answer}' ")

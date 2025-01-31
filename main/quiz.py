@@ -30,5 +30,44 @@ question_data = {'quizzes': [
                         '<src>'
                         ], 
             'correct_answer': '<img>'}
+            ],
+                 
+        'quiz': [
+            {'question': '1?', 
+            'options': [
+                        '1', 
+                        '2', 
+                        '3'
+                        ], 
+            'correct_answer': '1'}, 
+
+            {'question': '2?', 
+            'options': [
+                        '1', 
+                        '2', 
+                        '3'
+                        ], 
+            'correct_answer': '2'}, 
+                
+            {'question': '3?', 
+            'options': [
+                        '1', 
+                        '2', 
+                        '3'
+                        ], 
+            'correct_answer': '3'}, 
+                
+            {'question': '4?', 
+            'options': [
+                        '1', 
+                        '2', 
+                        '4'
+                        ], 
+            'correct_answer': '4'}
             ]
         }
+
+
+data = question_data.get('quizzes') # return a list
+
+print(data[0])

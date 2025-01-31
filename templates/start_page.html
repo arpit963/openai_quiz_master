@@ -19,7 +19,7 @@
                 </br>   
             </div>
             <div class="button">
-                <form action="{% url 'quiz' %}" method="post">
+                <form action="{% url 'quiz' %}" method="GET">
                     {% csrf_token %}
                     <input type="text" id="question_descrption" name="user_input" maxlength="20">
                     </br>

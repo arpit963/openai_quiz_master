@@ -58,7 +58,7 @@
         <div class="row">
             <h3><u>Quiz: Question {{ current_question_index }} of {{ total_questions }}</u></h3>
             <p><b>{{ current_question.question }}</b></p>
-            <form method="post">
+            <form method="POST">
                 {% csrf_token %}
                 <!-- <p><b>{{ current_question.question }}</b></p> -->
                 <!-- Display options as radio buttons -->
