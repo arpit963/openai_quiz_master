@@ -5,10 +5,10 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "OpenAI",
+      "name": "Python Debugger: Django",
       "type": "debugpy",
       "request": "launch",
-      "args": ["runserver"],
+      "args": ["runserver", "8000"],
       "django": true,
       "autoStartBrowser": false,
       "program": "${workspaceFolder}/manage.py"
